@@ -1,6 +1,6 @@
 version: 0.2
 phases:
-  pre-build:
+  pre_build:
     commands:
       - echo "Starting pre-build phase"
       - echo "Authenticating into ECR"
@@ -13,7 +13,7 @@ phases:
       - echo "build the Docker image"
       - docker build -t hello-world .
       
-  post-build:
+  post_build:
     commands:
       - echo "Starting post-build phase"
       - docker tag hello-world:latest 035093205970.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest
