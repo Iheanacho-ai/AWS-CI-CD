@@ -1,0 +1,30 @@
+version: 0.2
+phases:
+  pre-build:
+    commands:
+      - echo "Starting pre-build phase"
+      - echo "Authenticating into ECR"
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 035093205970.dkr.ecr.us-east-1.amazonaws.com
+      - REPOSITORY_URI=035093205970.dkr.ecr.us-east-1.amazonaws.com/hello-world
+
+  build:
+    commands:
+      - echo "Starting build phase"
+      - echo "build the Docker image"
+      - docker build -t hello-world .
+      
+  post-build:
+    commands:
+      - echo "Starting post-build phase"
+      - docker tag hello-world:latest 035093205970.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest
+      - docker push 035093205970.dkr.ecr.us-east-1.amazonaws.com/hello-world:latest
+      - echo 'Creating the Imagedefinition file'
+      - printf '[{"name":"hello-world","imageUri":"%s"}]' $REPOSITORY_URI:latest > imagedefinitions.json
+
+
+artifacts:
+  files:
+    - imagedefinitions.json
+  
+
+    
